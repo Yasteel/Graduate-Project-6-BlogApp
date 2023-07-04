@@ -1,41 +1,32 @@
 ﻿namespace StolenBlog.API.Controllers
 {
 	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.EntityFrameworkCore;
-	using StolenBlog.API.Data;
-	using StolenBlog.Models.BlogModels;
+    using StolenBlog.API.Interfaces;
+    using StolenBlog.Models.BlogModels;
 
 	[Route("api/[controller]")]
     [ApiController]
     public class ImagesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IImageService imageService;
 
-        public ImagesController(AppDbContext context)
+        public ImagesController(IImageService imageService)
         {
-            _context = context;
+            this.imageService = imageService;
         }
 
         // GET: api/Images
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Images>>> GetImages()
+        public async Task<ActionResult<IEnumerable<Images>>> Get()
         {
-          if (_context.Images == null)
-          {
-              return NotFound();
-          }
-            return await _context.Images.ToListAsync();
+            return await this.imageService.GetAll();
         }
 
         // GET: api/Images/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Images>> GetImages(int id)
+        public async Task<ActionResult<Images>> Get(int id)
         {
-          if (_context.Images == null)
-          {
-              return NotFound();
-          }
-            var images = await _context.Images.FindAsync(id);
+            var images = await this.imageService.Get(id);
 
             if (images == null)
             {
@@ -46,74 +37,27 @@
         }
 
         // PUT: api/Images/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutImages(int id, Images images)
+        public async Task<IActionResult> Put(int id, Images images)
         {
-            if (id != images.ImageId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(images).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ImagesExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            this.imageService.Update(id, images);
             return NoContent();
         }
 
         // POST: api/Images
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Images>> PostImages(Images images)
+        public async Task<ActionResult<Images>> Post(Images images)
         {
-          if (_context.Images == null)
-          {
-              return Problem("Entity set 'AppDbContext.Images'  is null.");
-          }
-            _context.Images.Add(images);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetImages", new { id = images.ImageId }, images);
+            this.imageService.Create(images);
+            return NoContent();
         }
 
         // DELETE: api/Images/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteImages(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (_context.Images == null)
-            {
-                return NotFound();
-            }
-            var images = await _context.Images.FindAsync(id);
-            if (images == null)
-            {
-                return NotFound();
-            }
-
-            _context.Images.Remove(images);
-            await _context.SaveChangesAsync();
-
+            this.imageService.Delete(id);
             return NoContent();
-        }
-
-        private bool ImagesExists(int id)
-        {
-            return (_context.Images?.Any(e => e.ImageId == id)).GetValueOrDefault();
         }
     }
 }

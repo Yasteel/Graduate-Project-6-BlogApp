@@ -1,41 +1,32 @@
 ﻿namespace StolenBlog.API.Controllers
 {
 	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.EntityFrameworkCore;
-	using StolenBlog.API.Data;
-	using StolenBlog.Models.BlogModels;
+    using StolenBlog.API.Interfaces;
+    using StolenBlog.Models.BlogModels;
 
 	[Route("api/[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ICommentsService comments;
 
-        public CommentsController(AppDbContext context)
+        public CommentsController(ICommentsService comments)
         {
-            _context = context;
+            this.comments = comments;
         }
 
         // GET: api/Comments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Comments>>> GetComments()
+        public async Task<ActionResult<IEnumerable<Comments>>> Get()
         {
-          if (_context.Comments == null)
-          {
-              return NotFound();
-          }
-            return await _context.Comments.ToListAsync();
+          return await this.comments.GetAll();
         }
 
         // GET: api/Comments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Comments>> GetComments(int id)
+        public async Task<ActionResult<Comments>> Get(int id)
         {
-          if (_context.Comments == null)
-          {
-              return NotFound();
-          }
-            var comments = await _context.Comments.FindAsync(id);
+            var comments = await this.comments.Get(id);
 
             if (comments == null)
             {
@@ -46,74 +37,27 @@
         }
 
         // PUT: api/Comments/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutComments(int id, Comments comments)
+        public async Task<IActionResult> Put(int id, [FromBody] Comments comments)
         {
-            if (id != comments.CommentId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(comments).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CommentsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            this.comments.Update(id, comments);
             return NoContent();
         }
 
         // POST: api/Comments
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comments>> PostComments(Comments comments)
+        public async Task<ActionResult<Comments>> Post([FromBody] Comments comments)
         {
-          if (_context.Comments == null)
-          {
-              return Problem("Entity set 'AppDbContext.Comments'  is null.");
-          }
-            _context.Comments.Add(comments);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetComments", new { id = comments.CommentId }, comments);
+            this.comments.Create(comments);
+            return NoContent();
         }
 
         // DELETE: api/Comments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComments(int id)
         {
-            if (_context.Comments == null)
-            {
-                return NotFound();
-            }
-            var comments = await _context.Comments.FindAsync(id);
-            if (comments == null)
-            {
-                return NotFound();
-            }
-
-            _context.Comments.Remove(comments);
-            await _context.SaveChangesAsync();
-
+            this.comments.Delete(id);
             return NoContent();
-        }
-
-        private bool CommentsExists(int id)
-        {
-            return (_context.Comments?.Any(e => e.CommentId == id)).GetValueOrDefault();
         }
     }
 }

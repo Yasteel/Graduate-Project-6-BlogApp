@@ -2,40 +2,32 @@
 {
 	using Microsoft.AspNetCore.Mvc;
 	using Microsoft.EntityFrameworkCore;
-	using StolenBlog.API.Data;
-	using StolenBlog.Models.BlogModels;
+    using StolenBlog.API.Interfaces;
+    using StolenBlog.Models.BlogModels;
 
 	[Route("api/[controller]")]
     [ApiController]
     public class BlogsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IBlogsService blogsService;
 
-        public BlogsController(AppDbContext context)
+        public BlogsController(IBlogsService blogsService)
         {
-            _context = context;
+            this.blogsService = blogsService;
         }
 
         // GET: api/Blogs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Blogs>>> GetBlogs()
+        public async Task<ActionResult<IEnumerable<Blogs>>> Get()
         {
-          if (_context.Blogs == null)
-          {
-              return NotFound();
-          }
-            return await _context.Blogs.ToListAsync();
+          return await this.blogsService.GetAll();
         }
 
         // GET: api/Blogs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Blogs>> GetBlogs(int id)
+        public async Task<ActionResult<Blogs>> Get(int id)
         {
-          if (_context.Blogs == null)
-          {
-              return NotFound();
-          }
-            var blogs = await _context.Blogs.FindAsync(id);
+            var blogs = await this.blogsService.Get(id);
 
             if (blogs == null)
             {
@@ -46,74 +38,29 @@
         }
 
         // PUT: api/Blogs/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBlogs(int id, Blogs blogs)
+        public async Task<IActionResult> Put(int id, [FromBody] Blogs blogs)
         {
-            if (id != blogs.BlogId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(blogs).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BlogsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            this.blogsService.Update(id, blogs);
 
             return NoContent();
         }
 
         // POST: api/Blogs
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Blogs>> PostBlogs(Blogs blogs)
+        public async Task<ActionResult<Blogs>> Post([FromBody] Blogs blogs)
         {
-          if (_context.Blogs == null)
-          {
-              return Problem("Entity set 'AppDbContext.Blogs'  is null.");
-          }
-            _context.Blogs.Add(blogs);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetBlogs", new { id = blogs.BlogId }, blogs);
-        }
-
-        // DELETE: api/Blogs/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBlogs(int id)
-        {
-            if (_context.Blogs == null)
-            {
-                return NotFound();
-            }
-            var blogs = await _context.Blogs.FindAsync(id);
-            if (blogs == null)
-            {
-                return NotFound();
-            }
-
-            _context.Blogs.Remove(blogs);
-            await _context.SaveChangesAsync();
+            this.blogsService.Create(blogs);
 
             return NoContent();
         }
 
-        private bool BlogsExists(int id)
+        // DELETE: api/Blogs/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return (_context.Blogs?.Any(e => e.BlogId == id)).GetValueOrDefault();
+            this.blogsService.Delete(id);
+            return NoContent();
         }
     }
 }

@@ -1,41 +1,32 @@
 ﻿namespace StolenBlog.API.Controllers
 {
 	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.EntityFrameworkCore;
-	using StolenBlog.API.Data;
-	using StolenBlog.Models.BlogModels;
+    using StolenBlog.API.Interfaces;
+    using StolenBlog.Models.BlogModels;
 
 	[Route("api/[controller]")]
     [ApiController]
     public class BlogPostsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IBlogPostsService blogPostsService;
 
-        public BlogPostsController(AppDbContext context)
+        public BlogPostsController(IBlogPostsService blogPostsService)
         {
-            _context = context;
+            this.blogPostsService = blogPostsService;
         }
 
         // GET: api/BlogPosts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BlogPosts>>> GetBlogPosts()
+        public async Task<ActionResult<IEnumerable<BlogPosts>>> Get()
         {
-          if (_context.BlogPosts == null)
-          {
-              return NotFound();
-          }
-            return await _context.BlogPosts.ToListAsync();
+            return await this.blogPostsService.GetAll();
         }
 
         // GET: api/BlogPosts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BlogPosts>> GetBlogPosts(int id)
+        public async Task<ActionResult<BlogPosts>> Get(int id)
         {
-          if (_context.BlogPosts == null)
-          {
-              return NotFound();
-          }
-            var blogPosts = await _context.BlogPosts.FindAsync(id);
+            var blogPosts = await this.blogPostsService.Get(id);
 
             if (blogPosts == null)
             {
@@ -46,74 +37,29 @@
         }
 
         // PUT: api/BlogPosts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBlogPosts(int id, BlogPosts blogPosts)
+        public async Task<IActionResult> Put(int id, [FromBody] BlogPosts blogPosts)
         {
-            if (id != blogPosts.PostId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(blogPosts).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BlogPostsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            this.blogPostsService.Update(id, blogPosts);
 
             return NoContent();
         }
 
         // POST: api/BlogPosts
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BlogPosts>> PostBlogPosts(BlogPosts blogPosts)
+        public async Task<ActionResult<BlogPosts>> Post([FromBody] BlogPosts blogPosts)
         {
-          if (_context.BlogPosts == null)
-          {
-              return Problem("Entity set 'AppDbContext.BlogPosts'  is null.");
-          }
-            _context.BlogPosts.Add(blogPosts);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetBlogPosts", new { id = blogPosts.PostId }, blogPosts);
-        }
-
-        // DELETE: api/BlogPosts/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBlogPosts(int id)
-        {
-            if (_context.BlogPosts == null)
-            {
-                return NotFound();
-            }
-            var blogPosts = await _context.BlogPosts.FindAsync(id);
-            if (blogPosts == null)
-            {
-                return NotFound();
-            }
-
-            _context.BlogPosts.Remove(blogPosts);
-            await _context.SaveChangesAsync();
+            this.blogPostsService.Create(blogPosts);
 
             return NoContent();
         }
 
-        private bool BlogPostsExists(int id)
+        // DELETE: api/BlogPosts/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return (_context.BlogPosts?.Any(e => e.PostId == id)).GetValueOrDefault();
+            this.blogPostsService.Delete(id);
+            return NoContent();
         }
     }
 }
