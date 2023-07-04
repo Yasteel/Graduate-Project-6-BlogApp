@@ -1,6 +1,7 @@
 ﻿namespace StolenBlog.API.Controllers
 {
 	using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
     using StolenBlog.API.Interfaces;
     using StolenBlog.Models.BlogModels;
 
@@ -48,6 +49,7 @@
         [HttpPost]
         public async Task<ActionResult<Users>> Post([FromBody] Users users)
         {
+            Console.WriteLine(JsonConvert.SerializeObject(users));
             this.usersService.Create(users);
             return NoContent();
         }

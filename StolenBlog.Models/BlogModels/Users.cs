@@ -8,7 +8,6 @@
 	{
 		[Key]
 		[Column("pkUserId")]
-		[NotNull]
 		[DataType("integer")]
         public int UserId { get; set; }
 
