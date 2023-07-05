@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using StolenBlog.Data;
-using StolenBlog.Models;
-using StolenBlog.Models.BlogModels;
-using System.Text;
-using System.Text.Unicode;
-
-namespace StolenBlog.Controllers
+﻿namespace StolenBlog.Controllers
 {
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
+    using StolenBlog.Data;
+    using StolenBlog.Models;
+    using StolenBlog.Models.BlogModels;
+    using System.Text;
+
     public class AuthController : Controller
     {
         private readonly SignInManager<StolenBlogUser> signInManager;
