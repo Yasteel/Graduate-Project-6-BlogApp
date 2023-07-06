@@ -5,10 +5,10 @@
 
 	public class Categories
 	{
-		[Key]
-		[Column("pkCategoryId")]
-		public int CategoryId { get; set; }
+		//[Key]
+		//[Column("pkCategoryId")]
+		//public int CategoryId { get; set; }
 
-		public string CategoryName { get; set; }
+		//public string CategoryName { get; set; }
 	}
 }

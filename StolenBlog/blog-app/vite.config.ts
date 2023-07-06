@@ -16,6 +16,7 @@ export default defineConfig({
       input: [
           './src/main.ts',
           './src/ProfilePage.ts'
+
       ],
       output: {
         entryFileNames: `assets/[name].js`,

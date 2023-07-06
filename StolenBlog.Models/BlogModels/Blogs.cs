@@ -20,9 +20,9 @@
 		[DataType(DataType.Text)]
 		public string Description { get; set; }
 
-        [Column("fkCategoryId")]
-        [DataType("integer")]
-        public int CategoryId { get; set; }
+        //[Column("fkCategoryId")]
+        //[DataType("integer")]
+        //public int CategoryId { get; set; }
 
         [DataType("integer")]
 		[Column("fkImageId")]

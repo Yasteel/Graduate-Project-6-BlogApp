@@ -1,9 +1,12 @@
-<script setup lang="ts">
-    import { reactive } from "vue"
+<script setup>
+    import { reactive, ref, onMounted } from "vue"
     import Comments from "./Comments.vue"
-
-    import '../style.css'
+    import NewPostForm from "./NewPostModal.vue"
     
+    onMounted(() => {
+      // child.value will hold an instance of <Child />
+    })
+
     const viewSettings = reactive({
         loggedIn: false,
         showComments: false,
@@ -28,6 +31,8 @@
             }
         ]
     })
+
+    const form = ref(null);
 
     const showComments = () => {
         viewSettings.showComments = !viewSettings.showComments;
@@ -73,6 +78,10 @@
             
             <Comments v-for="comment in postInfo.comments" :key="comment.id" :content="comment"/>
         </div>
+    </div>
+    <div>
+        <button @click="form.open">Add Post</button>
+        <NewPostForm ref="form"></NewPostForm>
     </div>
 </template>
 
