@@ -46,10 +46,9 @@
 
         // POST: api/Images
         [HttpPost]
-        public async Task<ActionResult<Images>> Post(Images images)
+        public IActionResult Post(IFormFile images)
         {
-            this.imageService.Create(images);
-            return NoContent();
+            return Ok(this.imageService.Create(images));
         }
 
         // DELETE: api/Images/5

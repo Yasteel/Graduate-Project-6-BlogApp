@@ -3,6 +3,7 @@
 	using System.ComponentModel.DataAnnotations;
 	using System.ComponentModel.DataAnnotations.Schema;
 
+
 	public class Images
 	{
         [Key]
@@ -11,6 +12,7 @@
         public int ImageId { get; set; }
 
         public string ImagePath { get; set; }
+
 
     }
 }
