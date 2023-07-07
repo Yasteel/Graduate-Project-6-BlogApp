@@ -15,13 +15,16 @@ export default defineConfig({
     rollupOptions: {
       input: [
           './src/main.ts',
-          './src/ProfilePage.ts'
+          './src/ProfilePage.ts',
+          './src/NavBar.ts',
+          './src/Login.ts',
+          './src/Register.ts'
 
       ],
       output: {
-        entryFileNames: `assets/[name].js`,
-        chunkFileNames: `assets/[name].js`,
-        assetFileNames: `assets/[name].[ext]`
+        entryFileNames: `assets/js/[name].js`,
+        chunkFileNames: `assets/js/[name].js`,
+        assetFileNames: `assets/css/[name].[ext]`
       }
     }
   },

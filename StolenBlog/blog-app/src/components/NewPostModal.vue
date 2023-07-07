@@ -1,5 +1,16 @@
 <script setup>
-    import { reactive } from 'vue';
+    import { reactive, onMounted, onRenderTriggered } from 'vue';
+    // import { store } from './store.ts'
+    
+    // onMounted(()=> {
+    //     // console.log(store.loggedIn);
+    // })
+
+    // onRenderTriggered((e) => {
+    //     if(e.newValue){
+    //         console.log(store.loggedIn);
+    //     }
+    // })
 
     const blogPostData = reactive({
         blogId: 0,
@@ -33,11 +44,11 @@
 <template>
     <div class="overlay" v-if="display.show">
         <div class="inputContainer">
-            <div class="row">
+            <div class="dataRow">
                 <label for="">Heading (optional)</label>
                 <input type="text" v-model="blogPostData.heading">
             </div>
-            <div class="row">
+            <div class="dataRow">
                 <label for="">Blog</label>
                 <select v-model="blogPostData.blogId">
                     <option value="">Tech</option>
@@ -47,16 +58,16 @@
                     <option value="">Porn</option>
                 </select>
             </div>
-            <div class="row">
+            <div class="dataRow">
                 <label for="">Content</label>
                 <textarea v-model="blogPostData.description"></textarea>
             </div>
-            <div class="row">
+            <div class="dataRow">
                 <label for="">Image (optional)</label>
                 <input type="file">
                 <button>Upload</button>
             </div>
-            <div class="row">
+            <div class="dataRow">
                 <button @click="showData">Save</button>
                 <button  @click="close">Cancel</button>
             </div>  
@@ -90,13 +101,13 @@
         z-index: 2;
     }
 
-    .row{
+    .dataRow{
         display: flex;
         gap: 1rem;
         align-items: center;
     }
 
-    .row:last-child{
+    .dataRow:last-child{
         justify-content: flex-end;
     }
 
