@@ -1,0 +1,34 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Helvetica;
+}
+
+:root{
+  --accent: #02CE85;
+  --primary: hsl(0, 0%, 85%);
+  --secondary: hsl(0, 0%, 18%);
+  --text: hsl(0, 2%, 50%);
+  --shadow: #FFFCFC;
+  --tertiary: #02A9CE;
+  --box-shadow: 0 0 15px 0 hsl(0 0% 5%);
+}
+
+body{
+  background: var(--secondary);
+}
+
+button{
+  padding: .5rem 1rem;
+  /* margin: 0 0 1rem 0;   */
+  border: none;
+  outline: none;
+  background: var(--accent);
+  cursor: pointer;
+  transition: background 200ms ease-in-out;
+}
+
+button:hover{
+  background: hsl(159, 98%, 61%);
+}
