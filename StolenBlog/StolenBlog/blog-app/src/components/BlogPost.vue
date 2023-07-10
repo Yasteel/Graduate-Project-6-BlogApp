@@ -19,11 +19,13 @@
 
     onMounted(() => {
         postInfo.postId = props.content.postId;
-        postInfo.heading = props.content.users.heading;
+        postInfo.heading = props.content.heading;
         postInfo.displayName = props.content.users.displayName;
         postInfo.content = props.content.description;
         postInfo.timestamp = props.content.dateUpdated;
         postInfo.user = props.content.users;
+
+
 
 
         getComments(props.content.postId, 
@@ -106,7 +108,7 @@
             <p class="timestamp">{{ getTimeDifference }}</p>
         </div>
         <div class="content">
-            <h3>{{ postInfo.heading  }}</h3>
+            <h4>{{ postInfo.heading  }}</h4>
             <p>{{ postInfo.content }}</p>
         </div>
         <div class="commentAction">

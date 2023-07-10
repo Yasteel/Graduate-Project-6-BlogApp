@@ -26,7 +26,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig")); // allows us to use in Dependancy Injection
+//builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig")); // allows us to use in Dependancy Injection
 
 builder.Services.AddAuthentication(options =>
 {
@@ -52,9 +52,6 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
 	.AddEntityFrameworkStores<AppDbContext>();
-
-
-
 
 builder.Services.AddScoped<IBlogPostsService, BlogPostsService>();
 builder.Services.AddScoped<IBlogsService, BlogsService>();
