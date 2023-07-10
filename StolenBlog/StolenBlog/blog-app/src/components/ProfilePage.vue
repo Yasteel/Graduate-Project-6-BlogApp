@@ -1,14 +1,14 @@
 <script setup>
     // import { reactive, onMounted } from 'vue'
     import ProfileInfo from './ProfileInfo.vue'
-    import Blogs from './Blogs.vue'
+    import BlogSection from './BlogSection.vue'
     
 </script>
 
 <template>
     <div class="profilePageContainer">
         <ProfileInfo></ProfileInfo>
-        <Blogs></Blogs>
+        <BlogSection></BlogSection>
     </div>
 </template>
 

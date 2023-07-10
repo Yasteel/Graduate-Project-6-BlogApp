@@ -12,16 +12,26 @@
     })
 
     const onRegisterClick = () => {
-        if(registerData.email == null || registerData.password == null || registerData.repeatPassword == null || registerData.password != registerData.repeatPassword || registerData.firstName == null || registerData.surname == null || registerData.displayName == null || registerData.dateOfBirth == null){
+        if(registerData.email == null || registerData.password == null || registerData.repeatPassword == null || registerData.firstName == null || registerData.surname == null || registerData.displayName == null || registerData.dateOfBirth == null){
             alert("Enter information into all fields");
         }
         else{
             register(registerData,
             (res) => {
-                console.log(res);
+                alert("Registration Successful.");
+                window.location.href = "/Auth/Login";
             }, 
             (rej) => {
-                console.log(rej);
+                
+                var errors = ``;
+
+                for(const key in rej.response.data.errors){
+                    errors += `${rej.response.data.errors[key].toString()}\n`
+                }
+                alert(errors);
+
+                console.log(rej.response.data.errors);
+
             })
         }
     }

@@ -1,17 +1,84 @@
 <script setup>
-    import { reactive, onMounted } from 'vue'
+    import { reactive, onMounted, computed } from 'vue';
+    import { store } from './store';
 
     const viewSettings = reactive({
         editing: false
-    })
+    });
 
     const userInfo = reactive({
-        email: "yasteel.gunga01@gmail.com",
-        name: "Yasteel",
-        surname: "Gungapursat",
-        displayName: "Steel",
-        dateOfBirth: new Date("1998/08/04")
-    })
+        userId: null,
+        email: null,
+        firstName: null,
+        surname: null,
+        displayName: null,
+        dateOfBirth: null
+    });
+
+    const originalUserInfo = reactive({
+        userId: null,
+        email: null,
+        firstName: null,
+        surname: null,
+        displayName: null,
+        dateOfBirth: null
+    });
+
+    onMounted(() => {
+        getUserByEmail(store.userEmail,
+        (res) => {
+            userInfo.userId = res.data.userId;
+            userInfo.email = res.data.email;
+            userInfo.firstName = res.data.firstName;
+            userInfo.surname = res.data.surname;
+            userInfo.displayName = res.data.displayName;
+            userInfo.dateOfBirth = res.data.dateOfBirth;
+            
+            originalUserInfo.userId = res.data.userId;
+            originalUserInfo.email = res.data.email;
+            originalUserInfo.firstName = res.data.firstName;
+            originalUserInfo.surname = res.data.surname;
+            originalUserInfo.displayName = res.data.displayName;
+            originalUserInfo.dateOfBirth = res.data.dateOfBirth;
+        },
+        (rej) => {
+            console.log(rej);
+        });
+    });
+
+    const closeEdit = () => {
+        userInfo.userId = originalUserInfo.userId;
+        userInfo.email = originalUserInfo.email;
+        userInfo.firstName = originalUserInfo.firstName;
+        userInfo.surname = originalUserInfo.surname;
+        userInfo.displayName = originalUserInfo.displayName;
+        userInfo.dateOfBirth = originalUserInfo.dateOfBirth;
+
+        viewSettings.editing = false;
+    }
+
+    const update = () => {
+        editUser(userInfo.userId, JSON.stringify(userInfo), store.token,
+        (res) => {
+            originalUserInfo.userId = userInfo.userId;
+            originalUserInfo.email = userInfo.email;
+            originalUserInfo.firstName = userInfo.firstName;
+            originalUserInfo.surname = userInfo.surname;
+            originalUserInfo.displayName = userInfo.displayName;
+            originalUserInfo.dateOfBirth = userInfo.dateOfBirth;
+
+            viewSettings.editing = false;
+        },
+        (error) => {
+            console.log(error);
+        });
+    };
+
+    // const getLocaleDateString = computed((str) => {
+    //     var date = new Date(str);
+    //     return date.toLocaleDateString();
+    // })
+    
 </script>
 
 <template>
@@ -23,7 +90,7 @@
             </div>
             <div class="rowData">
                 <label for="name">Name</label>
-                <p id="name">{{ userInfo.name }}</p>
+                <p id="name">{{ userInfo.firstName }}</p>
             </div>
             <div class="rowData">
                 <label for="surname">Surname</label>
@@ -33,10 +100,10 @@
                 <label for="displayName">DisplayName</label>
                 <p id="displayName">{{ userInfo.displayName }}</p>
             </div>
-            <div class="rowData">
+            <!-- <div class="rowData">
                 <label for="dob">Date of Birth</label>
-                <p id="dob">{{ userInfo.dateOfBirth.toLocaleDateString() }}</p>
-            </div>
+                <p id="dob">{{ userInfo.dateOfBirth }}</p>
+            </div> -->
             <div class="rowData">
                 <button @click="viewSettings.editing = true">Edit</button>
             </div>
@@ -48,7 +115,7 @@
             </div>
             <div class="rowData">
                     <label for="name">Name</label>
-                <input type="text" v-model="userInfo.name">
+                <input type="text" v-model="userInfo.firstName">
             </div>
             <div class="rowData">
                     <label for="surname">Surname</label>
@@ -58,13 +125,13 @@
                     <label for="displayName">DisplayName</label>
                 <input type="text" v-model="userInfo.displayName">
             </div>
-            <div class="rowData">
+            <!-- <div class="rowData">
                     <label for="dob">Date of Birth</label>
                 <input type="date" v-model="userInfo.dateOfBirth">
-            </div>
+            </div> -->
             <div class="rowData">
-                <button>Update</button>
-                <button @click="viewSettings.editing = false">Cancel</button>
+                <button @click="update">Update</button>
+                <button @click="closeEdit">Cancel</button>
             </div>
         </div>
     </section>

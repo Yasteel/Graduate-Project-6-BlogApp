@@ -217,9 +217,16 @@ function getUser(userId, success, error) {
         .catch(err => error(err));
 }
 
+function getUserByEmail(userEmail, success, error) {
+    axios
+        .get(`https://localhost:7215/api/Users/GetByUsername/${userEmail}`)
+        .then(res => success(res))
+        .catch(err => error(err));
+}
+
 function editUser(userId, userObject, token, success, error) {
     axios
-        .put(`https://localhost:7215/api/Users/${userId}`, JSON.stringify(userObject), {
+        .patch(`https://localhost:7215/api/Users/${userId}`, userObject, {
             'headers': {
                 'Content-Type': "application/json",
                 'Authorization': `Bearer ${token}`

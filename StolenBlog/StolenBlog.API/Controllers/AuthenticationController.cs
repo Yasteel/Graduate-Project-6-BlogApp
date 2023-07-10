@@ -1,6 +1,7 @@
 ﻿namespace StolenBlog.API.Controllers
 {
 	using Azure.Core.Pipeline;
+	using FluentValidation;
 	using Microsoft.AspNetCore.Authentication.JwtBearer;
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Identity;
@@ -26,29 +27,40 @@
 		private readonly IConfiguration configuration;
 
 		private readonly IUserService userService;
+		private readonly IValidator<RegistrationRequestDto> validator;
 
 		public AuthenticationController
 		(
 			UserManager<IdentityUser> userManager,
 			SignInManager<IdentityUser> signInManager,
 			IConfiguration configuration,
-			IUserService userService
+			IUserService userService,
+			IValidator<RegistrationRequestDto> validator
 		)
         {
 			this.userManager = userManager;
 			this.signInManager = signInManager;
 			this.configuration = configuration;
 			this.userService = userService;
+			this.validator = validator;
 		}
 
 		[HttpPost]
 		[Route("Register")]
 		public async Task<IActionResult> Post([FromBody] RegistrationRequestDto registrationRequest)
 		{
-			if(!this.ModelState.IsValid)
+			//if(!this.ModelState.IsValid)
+			//{
+			//	return BadRequest(this.ModelState);
+			//}
+
+			var validationResult = await this.validator.ValidateAsync(registrationRequest);
+
+			if (!validationResult.IsValid)
 			{
-				return BadRequest(this.ModelState);
+				return BadRequest(validationResult.Errors);
 			}
+
 
 			var userExist = await this.userManager.FindByEmailAsync(registrationRequest.Email);
 
@@ -70,9 +82,9 @@
 				UserName = registrationRequest.Email
 			};
 
-			var result = await this.userManager.CreateAsync(newUser, registrationRequest.Password);
+			var createResult = await this.userManager.CreateAsync(newUser, registrationRequest.Password);
 
-			if (!result.Succeeded)
+			if (!createResult.Succeeded)
 			{
 				return this.BadRequest(new AuthResult()
 				{

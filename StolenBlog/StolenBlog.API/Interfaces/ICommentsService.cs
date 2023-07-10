@@ -4,5 +4,6 @@
 
 	public interface ICommentsService : IGenericService<Comments>
 	{
+		Task<List<Comments>> getAllByBlogPostId(int postId);
 	}
 }

@@ -1,6 +1,8 @@
 ﻿namespace StolenBlog.API.Controllers
 {
 	using FluentValidation;
+	using Microsoft.AspNetCore.Authentication.JwtBearer;
+	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
 
 	using StolenBlog.API.Interfaces;
@@ -81,6 +83,7 @@
 		}
 
 		// PUT: api/BlogPosts/5
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Put(int id, [FromBody] BlogPosts blogPosts)
 		{
@@ -107,6 +110,7 @@
 		}
 
 		// POST: api/BlogPosts
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[HttpPost]
 		public async Task<ActionResult<BlogPosts>> Post([FromBody] BlogPosts blogPosts)
 		{
@@ -114,10 +118,7 @@
 
 			if (!result.IsValid)
 			{
-				return this.BadRequest(new List<string>()
-				{
-					"Input Error"
-				});
+				return this.BadRequest(result.Errors);
 			}
 
 			blogPosts.DateUpdated = DateTime.Now;
@@ -127,6 +128,7 @@
 		}
 
 		// DELETE: api/BlogPosts/5
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(int id)
 		{

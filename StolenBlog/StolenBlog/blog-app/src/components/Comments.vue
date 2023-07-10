@@ -1,8 +1,31 @@
 <script setup>
-    import { reactive, onMounted } from "vue"
+    import { reactive, onMounted, computed } from "vue"
 
     const props = defineProps({
         content: {}
+    });
+
+    onMounted(() => {
+        console.log(props.content);
+    })
+
+    const getTimeDifference = computed(() => {
+        let now = new Date();
+        let diff = now - new Date(props.content.dateUpdated);
+        
+        if( diff < (1000 * 60) ){
+            return "a minute ago";
+        }
+        else if(diff < (1000 * 60 * 60)){
+            return `${Math.floor(diff / (1000 * 60))}  minutes ago`;
+        }
+        else if(diff < (1000 * 60 * 60 * 24)){
+            return `${Math.floor(diff / (1000 * 60 * 60))}  hours ago`;
+        }
+        else{
+            var date = new Date(props.content.dateUpdated);
+            return date.toLocaleDateString();
+        }
     })
 
 </script>
@@ -10,8 +33,8 @@
 <template>
     <div class="commentContainer">
         <div class="header">
-            <p class="name">{{ "Need DisplayName" }}</p>
-            <p class="timestamp">{{ props.content.dateUpdated }}</p>
+            <p class="name">{{ props.content.displayName }}</p>
+            <p class="timestamp">{{ getTimeDifference }}</p>
         </div>
         <div class="content">
             <p>{{ props.content.comment }}</p>

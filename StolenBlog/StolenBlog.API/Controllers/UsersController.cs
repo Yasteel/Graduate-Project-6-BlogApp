@@ -37,9 +37,23 @@
             return user;
         }
 
-        // PUT: api/Users/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Users users)
+		[HttpGet]
+        [Route("GetByUsername/{email}")]
+		public async Task<ActionResult<Users>> Get(string email)
+		{
+            var user = await this.userService.GetByUsername(email);
+
+			if (user == null)
+			{
+				return NotFound();
+			}
+
+			return user;
+		}
+
+		// PUT: api/Users/5
+		[HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(int id, [FromBody] Users users)
         {
             this.userService.Update(id, users);
             return NoContent();

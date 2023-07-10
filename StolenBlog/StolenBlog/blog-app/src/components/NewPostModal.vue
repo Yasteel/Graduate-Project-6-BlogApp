@@ -54,6 +54,8 @@
             createPost(blogPostData, store.token,
             (res) => {
                 console.log(res);
+                alert("Post Success");
+                display.show = false;
             },
             (rej) => {
                 alert(rej);
@@ -83,11 +85,11 @@
                 <label for="">Content</label>
                 <textarea v-model="blogPostData.description"></textarea>
             </div>
-            <div class="dataRow">
+            <!-- <div class="dataRow">
                 <label for="">Image (optional)</label>
                 <input type="file">
                 <button>Upload</button>
-            </div>
+            </div> -->
             <div class="dataRow">
                 <button @click="addNewPost">Save</button>
                 <button  @click="close">Cancel</button>
@@ -112,7 +114,7 @@
     }
 
     .inputContainer{
-        width: 750px;
+        width: 500px;
         padding: 2rem;
         display: flex;
         flex-direction: column;
@@ -124,29 +126,30 @@
 
     .dataRow{
         display: flex;
+        flex-direction: column;
         gap: 1rem;
-        align-items: center;
     }
 
     .dataRow:last-child{
         justify-content: flex-end;
     }
 
-    label{
-        display: block;
-        width: 150px;
-        text-align: right;
-    }
-
     input, textarea, select{
         flex-grow: 1;
         height: 40px;
         padding: .5rem;
-        background: none;
+        background: hsl(0 0% 15%);
         border: none;
         outline: none;
         box-shadow: 0 0 5px 0 hsl(0 0% 5%);
         color: var(--text);
+        transition: box-shadow 200ms ease-in-out;
+
+    }
+
+    :is(input, textarea, select):focus{
+        box-shadow: 0 0 5px 0 var(--accent);
+        color: hsl(0 0% 90%);
     }
 
     textarea{

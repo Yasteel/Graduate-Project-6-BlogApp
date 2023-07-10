@@ -10,6 +10,7 @@ using StolenBlog.API.Interfaces;
 using StolenBlog.API.Services;
 using StolenBlog.API.Validators;
 using StolenBlog.Models.BlogModels;
+using StolenBlog.Models.DTOs;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +21,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
 {
-	options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader());
+	options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -62,6 +63,9 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IValidator<BlogPosts>, BlogPostValidator>();
+builder.Services.AddScoped<IValidator<Blogs>, BlogValidator>();
+builder.Services.AddScoped<IValidator<RegistrationRequestDto>, RegisterValidator>();
+
 
 builder.Services.AddScoped<ICacheService, CacheService>();
 

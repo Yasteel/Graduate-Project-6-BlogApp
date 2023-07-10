@@ -4,9 +4,12 @@
     import { store } from './store'
 
     const postInfo = reactive({
+        postId: null,
+        heading: "",
         displayName: "",
         content: "",
         timestamp: "",
+        user: {},
         comments: []
     })
 
@@ -15,9 +18,13 @@
     })
 
     onMounted(() => {
+        postInfo.postId = props.content.postId;
+        postInfo.heading = props.content.users.heading;
         postInfo.displayName = props.content.users.displayName;
         postInfo.content = props.content.description;
         postInfo.timestamp = props.content.dateUpdated;
+        postInfo.user = props.content.users;
+
 
         getComments(props.content.postId, 
         (res) => {
@@ -49,7 +56,26 @@
     }
 
     const postComment = () => {
-        alert(newComment.comment);
+
+        getUserByEmail(store.userEmail, (res) => {
+            var commentObj = {
+                postId: postInfo.postId,
+                comment: newComment.comment,
+                userId: res.data.userId
+            }
+
+            createComment(commentObj, store.token,
+            (result) => {
+                alert("Comment Posted");
+                viewSettings.addComment = false;
+            }, 
+            (error) => {
+                alert(`error - 1 ${JSON.stringify(rej)}`);
+            });
+
+        }, (rej) => {
+            console.log(rej);
+        });
     }
 
     const getTimeDifference = computed(() => {
@@ -69,7 +95,6 @@
             var date = new Date(postInfo.timestamp);
             return date.toLocaleDateString();
         }
-
     })
 
 </script>
@@ -81,6 +106,7 @@
             <p class="timestamp">{{ getTimeDifference }}</p>
         </div>
         <div class="content">
+            <h3>{{ postInfo.heading  }}</h3>
             <p>{{ postInfo.content }}</p>
         </div>
         <div class="commentAction">
