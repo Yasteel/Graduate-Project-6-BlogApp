@@ -22,16 +22,12 @@
                 window.location.href = "/Auth/Login";
             }, 
             (rej) => {
-                
-                var errors = ``;
-
+                var errors = `Error:\n`;
                 for(const key in rej.response.data.errors){
                     errors += `${rej.response.data.errors[key].toString()}\n`
                 }
                 alert(errors);
-
-                console.log(rej.response.data.errors);
-
+                console.log(rej);
             })
         }
     }

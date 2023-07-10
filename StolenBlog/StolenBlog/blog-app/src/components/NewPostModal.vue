@@ -107,7 +107,7 @@
         height: 100%;
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
         background: hsl(0 0% 15% / 0.9);
         color: white;
         z-index: 0;
@@ -116,6 +116,7 @@
     .inputContainer{
         width: 500px;
         padding: 2rem;
+        margin-top: 2rem;
         display: flex;
         flex-direction: column;
         gap: 1rem;

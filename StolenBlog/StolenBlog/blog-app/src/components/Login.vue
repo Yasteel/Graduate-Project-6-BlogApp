@@ -15,9 +15,14 @@
             RememberMe: loginData.rememberMe
         }
 
+        if(obj.Email == null || obj.Password == null){
+            alert("Fields cannot be Empty ");
+            return;
+        }
+
         login(obj, (res) => {
+
             getUserName(res.data.token, (resolve) => {
-                console.log(resolve);
 
                 store.loggedIn = true;
                 store.userEmail = resolve.data;
@@ -25,17 +30,27 @@
 
                 sessionStorage.setItem("storeData", JSON.stringify(store));
                 
+                alert("Login Success.");
                 window.location.href="https://localhost:7183/Home/Index";
 
 
             }, (reject) => {
-                console.error(reject);
+    
+                var errors = ``;
+                for(const key in rej.response.data.errors){
+                    errors += `${rej.response.data.errors[key].toString()}\n`
+                }
+                alert(errors);
             });
 
 
         }, (rej) => {
-            alert(rej.response.data.errors[0]);
-            console.log(rej.response);
+
+            var errors = ``;
+            for(const key in rej.response.data.errors){
+                errors += `${rej.response.data.errors[key].toString()}\n`
+            }
+            alert(errors);
         })
     }
 </script>

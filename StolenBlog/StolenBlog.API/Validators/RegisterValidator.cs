@@ -30,6 +30,12 @@ namespace StolenBlog.API.Validators
 				.NotEmpty()
 				.WithMessage("Surame Cannot be left Empty");
 
+			this.RuleFor(_ => _.DateOfBirth)
+				.LessThan(DateTime.Today.AddYears(-10))
+				.WithMessage("You are Not old enough to use this application");
+
 		}
+
+
 	}
 }

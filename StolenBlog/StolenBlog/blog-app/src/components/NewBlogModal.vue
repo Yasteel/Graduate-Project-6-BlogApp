@@ -14,9 +14,7 @@
     })
 
     onMounted(() => {
-        if(props.content == null){
-            alert("Nothing in props")
-        }
+        
     })
 
     const display = reactive({
@@ -32,11 +30,9 @@
     };
 
     const addNewBlog = () => {
-        alert("something");
         if(blogData.name != null || blogData.description != null){
             getUserByEmail(store.userEmail,
             (res) => {
-                alert("in first result");
                 blogData.userid = res.data.userId;
 
                 createBlog(blogData, store.token,
