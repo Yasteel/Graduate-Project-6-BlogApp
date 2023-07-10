@@ -1,7 +1,9 @@
 <script setup>
     import { onMounted, reactive, ref } from 'vue';
     import { store } from './store';
-    import NewBlogModal from './NewBlogModal.vue';
+    import EditBlogModal from './EditBlogModal.vue';
+
+    const editBlog = ref(null);
 
     const props = defineProps({
         content: null
@@ -11,7 +13,7 @@
         content: null
     })
 
-    const editBlog = ref(null);
+    
 
     onMounted(() => {
         blogInfo.content = props.content;
@@ -35,15 +37,12 @@
         });
     }
 
-    const openEditBlog = () => {
-        editBlog.open;
-    }
 </script>
 
 <template>
     <div class="blog">
         <div class="cover">
-            <i class="fa-regular fa-pen-to-square" @click="openEditBlog"></i>
+            <i class="fa-regular fa-pen-to-square" @click="editBlog.open(blogInfo.content)"></i>
             <i class="fa-solid fa-trash-can" @click="deleteUserBlog"></i>
         </div>
         <div class="content">
@@ -53,7 +52,7 @@
         </div>
     </div>
 
-    <NewBlogModal ref="editBlog" :content="props.content"></NewBlogModal>
+    <EditBlogModal ref="editBlog"></EditBlogModal>
 </template>
 
 <style scoped>

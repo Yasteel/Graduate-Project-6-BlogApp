@@ -27,14 +27,14 @@
 
 <template>
     <section class="blogsSection">
-            <div class="newBlog">
-                <button @click="blogModal.open">New Blog</button>
-            </div>
-            <div class="blogs">
-                <Blog v-for="blog in blogObj.blogs" :key="blog.blogId" :content="blog"></Blog>
-            </div>
-        </section>
-        <NewBlogModal ref="blogModal"></NewBlogModal>
+        <div class="newBlog">
+            <button @click="blogModal.open">New Blog</button>
+        </div>
+        <div class="blogs">
+            <Blog v-for="blog in blogObj.blogs" :key="blog.blogId" :content="blog"></Blog>
+        </div>
+    </section>
+    <NewBlogModal ref="blogModal"></NewBlogModal>
 </template>
 
 <style scoped>

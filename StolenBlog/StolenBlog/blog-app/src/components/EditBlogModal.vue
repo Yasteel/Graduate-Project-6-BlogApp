@@ -1,21 +1,14 @@
 <script setup>
-    import { reactive, onMounted, onRenderTriggered } from 'vue';
+    import { reactive, onMounted } from 'vue';
     import { store } from './store.ts'
 
     const blogData = reactive({
-        userid: null,
-        name: null,
+        blogId: null,
         description: null,
-        imageId: null
+        imageId: null,
+        name: null,
+        userId: null
     });
-
-    const props = defineProps({
-        content: null
-    })
-
-    onMounted(() => {
-        
-    })
 
     const display = reactive({
         show: false
@@ -25,44 +18,51 @@
         display.show = false;
     };
 
-    const open = (message) => {
+    const open = (blogInfo) => {
+        blogData.blogId = blogInfo.blogId;
+        blogData.description = blogInfo.description;
+        blogData.image = blogInfo.image;
+        blogData.name = blogInfo.name;
+        blogData.userId = blogInfo.userId;
+
+        console.log(blogInfo);
         display.show = true;
     };
 
-    const addNewBlog = () => {
-        if(blogData.name != null || blogData.description != null){
-            getUserByEmail(store.userEmail,
-            (res) => {
-                blogData.userid = res.data.userId;
+    const saveBlog = () => {
+        var updatedBlogInfo = {
+            blogId: blogData.blogId,
+            description: blogData.description,
+            imageId: blogData.imageId,
+            name: blogData.name,
+            userId: blogData.userId
+        };
 
-                createBlog(blogData, store.token,
-                (res) => {
-                    if(res.status == 204){
-                        alert("Success");
-                        display.show = false;
-                    }
-                },
-                (error) => {
-                    console.log(error);
-                });
-            },
-            (rej) => {
-                console.log(rej);
-            })
-        }
-        else{
-            alert("Fill in all the Fields");
-        }
-    }
+        console.log(updatedBlogInfo);
+
+        editBlog(blogData.blogId, updatedBlogInfo, store.token,
+        (res) => {
+            alert("Blog Updated");
+            display.show = false;
+        },
+        (rej) => {
+            var errors = `Error:\n`;
+            for(const key in rej.response.data.errors){
+                errors += `${rej.response.data.errors[key].toString()}\n`
+            }
+            alert(errors);
+            console.log(rej);
+        })
+    };
 
     defineExpose({
         open
-    })
+    });
 </script>
 
 <template>
     <div class="overlay" v-if="display.show">
-        <h2>New Blog</h2>
+        <h2>Edit Blog</h2>
         <div class="inputContainer">
             <div class="dataRow">
                 <label for="name">Name</label>
@@ -73,7 +73,7 @@
                 <textarea id="description" v-model="blogData.description"></textarea>
             </div>
             <div class="dataRow">
-                <button @click="addNewBlog">Save</button>
+                <button @click="saveBlog">Save</button>
                 <button @click="close">Cancel</button>
             </div>  
         </div>
