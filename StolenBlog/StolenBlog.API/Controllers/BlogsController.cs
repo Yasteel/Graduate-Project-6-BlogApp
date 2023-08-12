@@ -4,11 +4,12 @@
 	using Microsoft.AspNetCore.Authentication.JwtBearer;
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
-
+	using Microsoft.IdentityModel.Tokens;
 	using StolenBlog.API.Interfaces;
 	using StolenBlog.Models.AuthModels;
 	using StolenBlog.Models.BlogModels;
 	using StolenBlog.Models.Dtos;
+	using System.Net;
 	using static System.Net.Mime.MediaTypeNames;
 
 	[Route("api/[controller]")]
@@ -41,19 +42,46 @@
 		}
 
 		// GET: api/Blogs
-		[HttpGet("{username}")]
-		public async Task<ActionResult<IEnumerable<Blogs>>> Get(string username)
+		[HttpGet("{username?}")]
+		public async Task<ActionResult<IEnumerable<Blogs>>> Get(string? username)
 		{
+			if (username.IsNullOrEmpty())
+			{
+				return BadRequest(new
+				{
+					new ArgumentException("cannot be null or empty", nameof(username)).Message, 
+					StatusCode = HttpStatusCode.BadRequest.ToString(),
+					Code = HttpStatusCode.BadRequest,
+				});
+			}
+
 			var user = await this.userService.GetByUsername(username);
 
 			// check if anything is in Redis
 
+			if (user is null)
+			{
+				return BadRequest(new
+				{
+					Message = $"{username} not found.",
+					StatusCode = HttpStatusCode.BadRequest.ToString(),
+					Code = HttpStatusCode.BadRequest,
+				});
+			}
+
 			try
 			{
-				var blogsFromRedis = this.cacheService.GetData<Blogs>($"{user.UserId}-blogs");
+				
+				var blogsFromRedis = this.cacheService.GetData<Blogs>($"{user.UserId}-blogs") ?? null;
 
 				if (blogsFromRedis is not null)
 				{
+
+					Console.BackgroundColor = ConsoleColor.Green;
+					Console.WriteLine("got from redis");
+					Console.BackgroundColor = ConsoleColor.Black;
+
+
 					// Got Users' Blogs from Cache
 					return Ok(this.getBlogResponseDto(blogsFromRedis));
 				}

@@ -17,7 +17,7 @@ namespace StolenBlog.API.Services
 
 		public async Task<Users> GetByUsername(string username)
 		{
-			return await this.dbContext.Set<Users>().FirstOrDefaultAsync(_ => _.Email == username);
+			return await this.dbContext.Users.FirstOrDefaultAsync(_ => _.Email == username);
 		}
     }
 }
